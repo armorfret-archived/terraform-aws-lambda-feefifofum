@@ -1,6 +1,14 @@
+terraform {
+  required_providers {
+    aws = {
+      version = "3.4.0"
+    }
+  }
+}
+
 module "apigw" {
   source  = "armorfret/apigw-lambda/aws"
-  version = "0.1.0"
+  version = "0.1.3"
 
   source_bucket  = "${var.lambda_bucket}"
   source_version = "${var.lambda_version}"
@@ -18,21 +26,21 @@ module "apigw" {
 
 module "publish_user" {
   source         = "armorfret/s3-publish/aws"
-  version        = "0.0.2"
+  version        = "0.1.1"
   logging_bucket = "${var.logging_bucket}"
   publish_bucket = "${var.data_bucket}"
 }
 
 module "config_user" {
   source         = "armorfret/s3-publish/aws"
-  version        = "0.0.2"
+  version        = "0.1.1"
   logging_bucket = "${var.logging_bucket}"
   publish_bucket = "${var.config_bucket}"
 }
 
 resource "aws_sqs_queue" "data_queue" {
-  name   = "${var.data_queue}"
-  policy = "${data.aws_iam_policy_document.sqs_perms.json}"
+  name   = var.data_queue
+  policy = data.aws_iam_policy_document.sqs_perms.json
 }
 
 data "aws_iam_policy_document" "lambda_perms" {
