@@ -10,8 +10,8 @@ module "apigw" {
   source  = "armorfret/apigw-lambda/aws"
   version = "0.1.6"
 
-  source_bucket  = "${var.lambda_bucket}"
-  source_version = "${var.lambda_version}"
+  source_bucket  = var.lambda_bucket
+  source_version = var.lambda_version
   function_name  = "feefifofum_${var.config_bucket}"
 
   environment_variables = {
@@ -19,23 +19,23 @@ module "apigw" {
     S3_KEY    = "config.yaml"
   }
 
-  access_policy_document = "${data.aws_iam_policy_document.lambda_perms.json}"
+  access_policy_document = data.aws_iam_policy_document.lambda_perms.json
 
-  hostname = "${var.hostname}"
+  hostname = var.hostname
 }
 
 module "publish_user" {
   source         = "armorfret/s3-publish/aws"
-  version        = "0.1.1"
-  logging_bucket = "${var.logging_bucket}"
-  publish_bucket = "${var.data_bucket}"
+  version        = "0.2.4"
+  logging_bucket = var.logging_bucket
+  publish_bucket = var.data_bucket
 }
 
 module "config_user" {
   source         = "armorfret/s3-publish/aws"
-  version        = "0.1.1"
-  logging_bucket = "${var.logging_bucket}"
-  publish_bucket = "${var.config_bucket}"
+  version        = "0.2.4"
+  logging_bucket = var.logging_bucket
+  publish_bucket = var.config_bucket
 }
 
 resource "aws_sqs_queue" "data_queue" {
